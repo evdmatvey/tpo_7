@@ -2,16 +2,34 @@ pipeline {
     agent any
 
     stages {
+        stage('Fix Git Permissions') {
+            steps {
+                script {
+                    echo "ИСПРАВЛЕНИЕ ПРАВ GIT..."
+                    sh '''
+                        git config --global --add safe.directory /var/jenkins_home/workspace/OpenBmcTests
+                        git config --global --add safe.directory /var/jenkins_home/workspace/OpenBmcTests@tmp
+                    '''
+                }
+            }
+        }
+
+        stage('Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Initializing QEMU') {
             steps {
                 script {
                     echo "ЗАПУСК QEMU..."
                     sh '''
                         chmod +x ./scripts/start_qemu.sh
-                        ./scripts/start_qemu.sh
+                        ./scripts/start_qemu.sh &
                         echo "⏳ Ждем 120 секунд пока QEMU запустится..."
                         sleep 120
-                        echo "✅ QEMU должен быть готов"
+                        echo "QEMU должен быть готов"
                     '''
                 }
             }
@@ -57,17 +75,18 @@ pipeline {
     post {
         always {
             echo "ЗАВЕРШЕНИЕ ПАЙПЛАЙНА"
-            sh '''
-                echo "СТАТУС ВЫПОЛНЕНИЯ"
-                echo "Pipeline: ${currentBuild.currentResult}"
-                date
-            '''
+            script {
+                echo "СТАТУС ВЫПОЛНЕНИЯ: ${currentBuild.currentResult}"
+            }
         }
         success {
             echo "ВСЕ ТЕСТЫ УСПЕШНО ЗАВЕРШЕНЫ!"
         }
         failure {
             echo "ТЕСТЫ ЗАВЕРШИЛИСЬ С ОШИБКАМИ"
+        }
+        unstable {
+            echo "ТЕСТЫ ЗАВЕРШИЛИСЬ НЕУСТОЙЧИВО"
         }
     }
 }
