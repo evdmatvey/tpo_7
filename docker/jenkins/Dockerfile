@@ -11,6 +11,11 @@ RUN apt-get update && \
         npm \
         curl \
         wget \
-        git && \
+        git \
+        unzip \
+        chromium \
+        chromium-driver && \
+    ln -s /usr/bin/chromium /usr/bin/google-chrome && \
+    ln -s /usr/bin/chromedriver /usr/local/bin/chromedriver && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

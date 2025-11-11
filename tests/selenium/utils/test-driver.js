@@ -9,6 +9,7 @@ class TestDriver {
   async setup() {
     console.log('setup');
     let options = new chrome.Options();
+    options.setChromeBinaryPath('/usr/bin/chromium');
     options.addArguments(
       '--headless=new',
       '--disable-gpu',

@@ -3,7 +3,6 @@
 cd ./docker/qemu
 docker rm qemu-openbmc
 docker build -t openbmc-qemu .
-docker
 docker run -d \
   --name qemu-openbmc \
   --privileged \
