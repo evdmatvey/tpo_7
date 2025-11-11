@@ -71,11 +71,6 @@ pipeline {
                     ./scripts/run_locust_tests.sh
                 '''
             }
-            post {
-                always {
-                    junit 'reports/locust-*.html'
-                }
-            }
         }
     }
 
