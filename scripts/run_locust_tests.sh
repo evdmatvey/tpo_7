@@ -10,6 +10,5 @@ locust -f openbmc_test.py -headless \
     --spawn-rate 2 \
     --run-time 30s \
     --host=https://localhost:2443 \
-    --html=../../reports/locust_report.html \
-    --csv=../../reports/locust
+    --html=../../reports/locust_report.html
 cd ../../
