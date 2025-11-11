@@ -2,79 +2,59 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout SCM') {
+        stage('Git Clone') {
             steps {
-                checkout scm
+                sh '''
+                    git clone --depth 1 https://github.com/evdmatvey/tpo_7.git tmp_repo
+                    mv tmp_repo/* .
+                    mv tmp_repo/.* . || true
+                    rm -rf tmp_repo
+                    ls -la
+                '''
             }
         }
 
         stage('Initializing QEMU') {
             steps {
-                script {
-                    echo "ЗАПУСК QEMU..."
-                    sh '''
-                        chmod +x ./scripts/start_qemu.sh
-                        ./scripts/start_qemu.sh &
-                        echo "⏳ Ждем 120 секунд пока QEMU запустится..."
-                        sleep 120
-                        echo "QEMU должен быть готов"
-                    '''
-                }
+                sh '''
+                    chmod +x ./scripts/start_qemu.sh
+                    ./scripts/start_qemu.sh &
+                    sleep 120
+                '''
             }
         }
 
         stage('API Tests') {
             steps {
-                script {
-                    echo "ЗАПУСК API ТЕСТОВ..."
-                    sh '''
-                        chmod +x ./scripts/run_vitest_tests.sh
-                        ./scripts/run_vitest_tests.sh
-                    '''
-                }
+                sh '''
+                    chmod +x ./scripts/run_vitest_tests.sh
+                    ./scripts/run_vitest_tests.sh
+                '''
             }
         }
 
         stage('UI Tests') {
             steps {
-                script {
-                    echo "ЗАПУСК UI ТЕСТОВ..."
-                    sh '''
-                        chmod +x ./scripts/run_selenium_tests.sh
-                        ./scripts/run_selenium_tests.sh
-                    '''
-                }
+                sh '''
+                    chmod +x ./scripts/run_selenium_tests.sh
+                    ./scripts/run_selenium_tests.sh
+                '''
             }
         }
 
         stage('Load Tests') {
             steps {
-                script {
-                    echo "ЗАПУСК НАГРУЗОЧНЫХ ТЕСТОВ..."
-                    sh '''
-                        chmod +x ./scripts/run_locust_tests.sh
-                        ./scripts/run_locust_tests.sh
-                    '''
-                }
+                sh '''
+                    chmod +x ./scripts/run_locust_tests.sh
+                    ./scripts/run_locust_tests.sh
+                '''
             }
         }
     }
 
     post {
         always {
-            echo "ЗАВЕРШЕНИЕ ПАЙПЛАЙНА"
-            script {
-                echo "СТАТУС ВЫПОЛНЕНИЯ: ${currentBuild.currentResult}"
-            }
-        }
-        success {
-            echo "ВСЕ ТЕСТЫ УСПЕШНО ЗАВЕРШЕНЫ!"
-        }
-        failure {
-            echo "ТЕСТЫ ЗАВЕРШИЛИСЬ С ОШИБКАМИ"
-        }
-        unstable {
-            echo "ТЕСТЫ ЗАВЕРШИЛИСЬ НЕУСТОЙЧИВО"
+            echo "СТАТУС: ${currentBuild.currentResult}"
         }
     }
 }
