@@ -46,14 +46,6 @@ pipeline {
             post {
                 always {
                     junit 'reports/vitest-*.xml'
-                    publishHTML([
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: 'reports',
-                        reportFiles: 'vitest-report.html',
-                        reportName: 'Vitest HTML Report'
-                    ])
                 }
             }
         }
@@ -68,14 +60,6 @@ pipeline {
             post {
                 always {
                     junit 'reports/selenium-*.xml'
-                    publishHTML([
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: 'reports',
-                        reportFiles: 'selenium-report.html',
-                        reportName: 'Selenium HTML Report'
-                    ])
                 }
             }
         }
@@ -87,31 +71,25 @@ pipeline {
                     ./scripts/run_locust_tests.sh
                 '''
             }
-            post {
-                always {
-                    publishHTML([
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: 'reports',
-                        reportFiles: 'locust_report.html',
-                        reportName: 'Locust Load Test Report'
-                    ])
-                    archiveArtifacts 'reports/locust_report.html'
-                }
-            }
         }
     }
 
     post {
         always {
             echo "СТАТУС: ${currentBuild.currentResult}"
-            archiveArtifacts 'reports/**/*'
+
+            archiveArtifacts artifacts: 'reports/**/*', fingerprint: true
 
             junit 'reports/**/*.xml'
         }
         success {
             echo "ВСЕ ТЕСТЫ ПРОЙДЕНЫ УСПЕШНО"
+            sh '''
+                echo "📊 Отчеты сохранены в:"
+                echo "   - JUnit отчеты: reports/*.xml"
+                echo "   - HTML отчеты: reports/*.html"
+                ls -la reports/ || true
+            '''
         }
         failure {
             echo "ТЕСТЫ ЗАВЕРШИЛИСЬ С ОШИБКАМИ"
