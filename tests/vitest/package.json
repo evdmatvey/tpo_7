@@ -7,7 +7,7 @@
     "build": "tsc",
     "dev": "tsx watch src/main.ts",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run --reporter=verbose --reporter=junit --reporter=html --outputFile=../../reports/vitest-junit.xml"
   },
   "keywords": [],
   "author": "",
