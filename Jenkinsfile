@@ -79,8 +79,6 @@ pipeline {
             echo "СТАТУС: ${currentBuild.currentResult}"
 
             archiveArtifacts artifacts: 'reports/**/*', fingerprint: true
-
-            junit 'reports/**/*.xml'
         }
         success {
             echo "ВСЕ ТЕСТЫ ПРОЙДЕНЫ УСПЕШНО"
