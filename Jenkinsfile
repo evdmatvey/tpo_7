@@ -1,7 +1,16 @@
 pipeline {
     agent any
+    options {
+        skipDefaultCheckout()
+    }
 
     stages {
+        stage('Clean Workspace') {
+            steps {
+                sh 'rm -rf * .git* || true'
+            }
+        }
+
         stage('Git Clone') {
             steps {
                 sh '''
