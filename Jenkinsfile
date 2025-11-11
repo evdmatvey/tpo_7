@@ -73,7 +73,7 @@ pipeline {
             }
             post {
                 always {
-                    junit 'reports/locust-*.xml'
+                    junit 'reports/locust-*.html'
                 }
             }
         }
