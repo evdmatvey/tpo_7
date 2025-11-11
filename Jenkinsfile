@@ -2,18 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Fix Git Permissions') {
-            steps {
-                script {
-                    echo "ИСПРАВЛЕНИЕ ПРАВ GIT..."
-                    sh '''
-                        git config --global --add safe.directory /var/jenkins_home/workspace/OpenBmcTests
-                        git config --global --add safe.directory /var/jenkins_home/workspace/OpenBmcTests@tmp
-                    '''
-                }
-            }
-        }
-
         stage('Checkout SCM') {
             steps {
                 checkout scm
