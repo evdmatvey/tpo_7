@@ -71,6 +71,11 @@ pipeline {
                     ./scripts/run_locust_tests.sh
                 '''
             }
+            post {
+                always {
+                    junit 'reports/locust-*.xml'
+                }
+            }
         }
     }
 
@@ -85,7 +90,7 @@ pipeline {
         success {
             echo "ВСЕ ТЕСТЫ ПРОЙДЕНЫ УСПЕШНО"
             sh '''
-                echo "📊 Отчеты сохранены в:"
+                echo "Отчеты сохранены в:"
                 echo "   - JUnit отчеты: reports/*.xml"
                 echo "   - HTML отчеты: reports/*.html"
                 ls -la reports/ || true
