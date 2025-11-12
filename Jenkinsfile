@@ -29,7 +29,7 @@ pipeline {
                 sh '''
                     chmod +x ./scripts/start_qemu.sh
                     ./scripts/start_qemu.sh &
-                    sleep 10
+                    sleep 60
                 '''
             }
         }
